@@ -144,7 +144,7 @@
             <a href="#about" data-target="about" class="mobile-nav-link block font-orbitron text-sm tracking-widest text-gray-300 hover:text-orbitGold py-2 border-b border-white/5">ABOUT US</a>
             <a href="#team" data-target="team" class="mobile-nav-link block font-orbitron text-sm tracking-widest text-gray-300 hover:text-orbitGold py-2 border-b border-white/5">THE CREW</a>
             <a href="#projects" class="mobile-nav-link block font-orbitron text-sm tracking-widest text-gray-300 hover:text-orbitGold py-2 border-b border-white/5">PROJECTS</a>
-            <a href="#game" data-target="game" class="mobile-nav-link block font-orbitron text-sm tracking-widest text-gray-300 hover:text-orbitGold py-2 border-b border-white/5">MINI-GAME</a>
+            <a href="#game" class="mobile-nav-link block font-orbitron text-sm tracking-widest text-gray-300 hover:text-orbitGold py-2 border-b border-white/5">MINI-GAME</a>
             <a href="#achievements" class="mobile-nav-link block font-orbitron text-sm tracking-widest text-gray-300 hover:text-orbitGold py-2 border-b border-white/5">MISSION LOG</a>
             <a href="#contact" class="block text-center w-full py-3 rounded-xl bg-gradient-to-r from-orbitGold to-amber-600 text-spaceDark font-orbitron font-bold text-sm tracking-widest mt-4">LAUNCH COMMS</a>
         </div>
@@ -169,7 +169,7 @@
                             ORIGIN PROTOCOL: <span class="text-white border-b border-neonCyan/50 pb-0.5">SMK Sacred Heart</span>
                         </h2>
                         
-                        <h1 class="text-5xl sm:text-7xl lg:text-8xl font-orbitron font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-orbitGold mt-4 leading-none select-none filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+                        <h1 class="text-5xl sm:text-7xl lg:text-8xl font-orbitron font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-orbitGold mt-4 leading-none select-none filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
                             SPACEBOYS
                         </h1>
                         
@@ -317,7 +317,7 @@
                                 KL
                             </div>
                             <div>
-                                <span class="block text-[11px] font-orbitron tracking-widest text-orbitGold uppercase">CREATIVE DIRECTOR</span>
+                                <span class="block text-[11px] font-orbitron font-bold tracking-widest text-orbitGold uppercase">CREATIVE DIRECTOR</span>
                                 <h3 class="text-lg font-bold font-orbitron text-white">Kelvin Ling</h3>
                                 <p class="text-xs text-gray-400 font-light">Li Jie</p>
                             </div>
@@ -339,7 +339,7 @@
                                 NL
                             </div>
                             <div>
-                                <span class="block text-[11px] font-orbitron tracking-widest text-orbitGold uppercase">STEM TASK DESIGNER</span>
+                                <span class="block text-[11px] font-orbitron font-bold tracking-widest text-orbitGold uppercase">STEM TASK DESIGNER</span>
                                 <h3 class="text-lg font-bold font-orbitron text-white">Nathanael Issac</h3>
                                 <p class="text-xs text-gray-400 font-light">Ling Sze Hsien</p>
                             </div>
@@ -361,7 +361,7 @@
                                 EL
                             </div>
                             <div>
-                                <span class="block text-[11px] font-orbitron tracking-widest text-orbitGold uppercase">COMMS & BRANDING</span>
+                                <span class="block text-[11px] font-orbitron font-bold tracking-widest text-orbitGold uppercase">COMMS & BRANDING</span>
                                 <h3 class="text-lg font-bold font-orbitron text-white">Ezra Ling</h3>
                                 <p class="text-xs text-gray-400 font-light">Sing Yi</p>
                             </div>
@@ -480,7 +480,7 @@
                     <h2 class="text-3xl sm:text-4xl font-orbitron font-black uppercase tracking-tight text-white">
                         ZERO-G PROTO RUNNER
                     </h2>
-                    <div class="w-16 h-1 bg-orbitGold mx-auto mt-2 rounded-full"></div>
+                    <div class="w-16 h-1 bg-orbitGold mt-2 rounded-full"></div>
                     <p class="text-gray-400 max-w-md mx-auto text-xs sm:text-sm mt-2 leading-relaxed">
                         Control the SPACEBOYS astronaut. Dodge dangerous space debris and harvest glowing energy cores to keep your thrusters powered!
                     </p>
@@ -681,7 +681,7 @@
                     <!-- Left Column: Interactive Simulation Feedback Module -->
                     <div class="lg:col-span-6">
                         <div class="glass-panel rounded-3xl p-6 md:p-8 border border-white/10 h-full flex flex-col justify-between">
-                            <div class="space-y-6">
+                            <div class="space-y-5">
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 rounded-lg bg-orbitGold/10 border border-orbitGold/30 flex items-center justify-center text-orbitGold">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499c-.195-.383-.687-.383-.882 0L8.723 7.55l-4.475.65c-.424.062-.592.583-.285.883l3.238 3.155-.764 4.457c-.072.422.375.74.755.542l4.017-2.112 4.017 2.112c.38.198.827-.118.755-.542l-.764-4.457 3.238-3.155c.307-.3.139-.821-.285-.883l-4.475-.65-1.975-4.051z"/></svg>
@@ -694,56 +694,72 @@
                                 </p>
                                 
                                 <!-- Cosmic Rating Star telemetry -->
-                                <div class="space-y-2">
-                                    <label class="block text-[10px] font-orbitron uppercase tracking-wider text-gray-400">Cosmic Satisfaction Index:</label>
+                                <div class="space-y-1">
+                                    <label class="block text-[9px] font-orbitron uppercase tracking-wider text-gray-400">Cosmic Satisfaction Index:</label>
                                     <div class="flex items-center gap-3">
                                         <!-- Interactive SVG Stars -->
                                         <button onclick="setFeedbackRating(1)" id="feedback-star-1" class="text-gray-600 hover:scale-110 transition-transform focus:outline-none">
-                                            <svg class="w-8 h-8 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                            <svg class="w-7 h-7 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                         </button>
                                         <button onclick="setFeedbackRating(2)" id="feedback-star-2" class="text-gray-600 hover:scale-110 transition-transform focus:outline-none">
-                                            <svg class="w-8 h-8 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                            <svg class="w-7 h-7 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                         </button>
                                         <button onclick="setFeedbackRating(3)" id="feedback-star-3" class="text-gray-600 hover:scale-110 transition-transform focus:outline-none">
-                                            <svg class="w-8 h-8 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                            <svg class="w-7 h-7 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                         </button>
                                         <button onclick="setFeedbackRating(4)" id="feedback-star-4" class="text-gray-600 hover:scale-110 transition-transform focus:outline-none">
-                                            <svg class="w-8 h-8 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                            <svg class="w-7 h-7 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                         </button>
                                         <button onclick="setFeedbackRating(5)" id="feedback-star-5" class="text-gray-600 hover:scale-110 transition-transform focus:outline-none">
-                                            <svg class="w-8 h-8 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                            <svg class="w-7 h-7 stroke-current fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                         </button>
                                         <span id="feedback-rating-label" class="text-xs font-orbitron font-extrabold text-gray-500 uppercase ml-2">--</span>
                                     </div>
                                 </div>
                                 
                                 <!-- Category select tags -->
-                                <div class="space-y-3">
-                                    <label class="block text-[10px] font-orbitron uppercase tracking-wider text-gray-400">Target System Evaluated:</label>
+                                <div class="space-y-2">
+                                    <label class="block text-[9px] font-orbitron uppercase tracking-wider text-gray-400">Target System Evaluated:</label>
                                     <div class="flex flex-wrap gap-2">
-                                        <button onclick="toggleFeedbackCategory('physics')" id="f-cat-physics" class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 text-[10px] font-orbitron font-bold uppercase hover:bg-white/10 hover:text-white transition-all select-none">
+                                        <button onclick="toggleFeedbackCategory('physics')" id="f-cat-physics" class="px-2.5 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 text-[9px] font-orbitron font-bold uppercase hover:bg-white/10 hover:text-white transition-all select-none">
                                             Zero-G Physics
                                         </button>
-                                        <button onclick="toggleFeedbackCategory('stem')" id="f-cat-stem" class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 text-[10px] font-orbitron font-bold uppercase hover:bg-white/10 hover:text-white transition-all select-none">
+                                        <button onclick="toggleFeedbackCategory('stem')" id="f-cat-stem" class="px-2.5 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 text-[9px] font-orbitron font-bold uppercase hover:bg-white/10 hover:text-white transition-all select-none">
                                             STEM Missions
                                         </button>
-                                        <button onclick="toggleFeedbackCategory('ui')" id="f-cat-ui" class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 text-[10px] font-orbitron font-bold uppercase hover:bg-white/10 hover:text-white transition-all select-none">
+                                        <button onclick="toggleFeedbackCategory('ui')" id="f-cat-ui" class="px-2.5 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 text-[9px] font-orbitron font-bold uppercase hover:bg-white/10 hover:text-white transition-all select-none">
                                             Graphics & HUD
                                         </button>
-                                        <button onclick="toggleFeedbackCategory('bg')" id="f-cat-bg" class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 text-[10px] font-orbitron font-bold uppercase hover:bg-white/10 hover:text-white transition-all select-none">
+                                        <button onclick="toggleFeedbackCategory('bg')" id="f-cat-bg" class="px-2.5 py-1.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 text-[9px] font-orbitron font-bold uppercase hover:bg-white/10 hover:text-white transition-all select-none">
                                             Galaxy Background
                                         </button>
+                                    </div>
+                                </div>
+
+                                <!-- Astro Identifiers Grid (NEW!) -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div>
+                                        <label class="block text-[9px] font-orbitron uppercase tracking-wider text-gray-400 mb-1">Astro Name</label>
+                                        <input id="feedback-name-input" type="text" class="w-full bg-spaceDark/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-orbitGold transition-all font-sans" placeholder="AstroBoy">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-orbitron uppercase tracking-wider text-gray-400 mb-1">Astro Email</label>
+                                        <input id="feedback-email-input" type="email" class="w-full bg-spaceDark/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-orbitGold transition-all font-sans" placeholder="astro@orbit.com">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-orbitron uppercase tracking-wider text-gray-400 mb-1">Frequency (Phone)</label>
+                                        <input id="feedback-phone-input" type="tel" class="w-full bg-spaceDark/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-orbitGold transition-all font-sans" placeholder="+60123456789">
                                     </div>
                                 </div>
                                 
                                 <!-- Feedback remarks text -->
                                 <div>
-                                    <label class="block text-[10px] font-orbitron uppercase tracking-wider text-gray-400 mb-2">Simulator Logs Remarks:</label>
-                                    <textarea id="feedback-message-input" rows="3" class="w-full bg-spaceDark/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orbitGold transition-all resize-none font-sans" placeholder="Write your review, bugs, or feature suggestions..."></textarea>
+                                    <label class="block text-[9px] font-orbitron uppercase tracking-wider text-gray-400 mb-1.5">Simulator Logs Remarks:</label>
+                                    <textarea id="feedback-message-input" rows="2" class="w-full bg-spaceDark/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-orbitGold transition-all resize-none font-sans" placeholder="Write your review, bugs, or feature suggestions..."></textarea>
                                 </div>
                             </div>
 
-                            <button onclick="submitFeedbackForm()" class="w-full mt-6 py-4 rounded-xl bg-gradient-to-r from-neonCyan to-cyan-500 text-spaceDark font-orbitron font-extrabold tracking-widest text-xs hover:shadow-lg hover:shadow-neonCyan/20 transform hover:-translate-y-0.5 transition-all">
+                            <button onclick="submitFeedbackForm()" class="w-full mt-4 py-3.5 rounded-xl bg-gradient-to-r from-neonCyan to-cyan-500 text-spaceDark font-orbitron font-extrabold tracking-widest text-[10px] hover:shadow-lg hover:shadow-neonCyan/20 transform hover:-translate-y-0.5 transition-all">
                                 SUBMIT SYSTEM FEEDBACK
                             </button>
                         </div>
@@ -976,7 +992,7 @@
                     // Soft halo glow
                     const starGlow = bgCtx.createRadialGradient(star.x, star.y, 0, star.x, star.y, currentSize * 4);
                     starGlow.addColorStop(0, `rgba(255, 255, 255, ${currentOpacity * 0.5})`);
-                    starGlow.addColorStop(1, 'rgba(0,0,0,0)');
+                    starGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
                     bgCtx.fillStyle = starGlow;
                     bgCtx.beginPath();
                     bgCtx.arc(star.x, star.y, currentSize * 4, 0, Math.PI * 2);
@@ -1138,7 +1154,7 @@
                     star.classList.add('text-orbitGold');
                     star.style.filter = 'drop-shadow(0 0 8px rgba(240, 159, 45, 0.75))';
                 } else {
-                    star.classList.remove('text-orbitGold');
+                    star.classList.remove('text-gray-600');
                     star.classList.add('text-gray-600');
                     star.style.filter = 'none';
                 }
@@ -1175,6 +1191,9 @@
             }
 
             const textInput = document.getElementById('feedback-message-input');
+            const nameInput = document.getElementById('feedback-name-input');
+            const emailInput = document.getElementById('feedback-email-input');
+            const phoneInput = document.getElementById('feedback-phone-input');
             const submitBtn = document.querySelector('button[onclick="submitFeedbackForm()"]');
             
             if (submitBtn) {
@@ -1184,14 +1203,17 @@
             }
 
             // ===============================================================
-            // ⚠️ SPACEBOYS DEVELOPERS: PASTE YOUR GOOGLE WEB APP URL HERE!
+            // ⚠️ SPACEBOYS DEVELOPERS: YOUR LIVE WEB APP ENDPOINT IS CONNECTED!
             // ===============================================================
-            const webAppUrl = "https://script.google.com/macros/s/AKfycbwyykyJYUTnOrBePwyTpXRZnfzhSIaESMjSYolE2SipBzJiI1ONlBOV33SYCqIC9c4ZhA/exec"; 
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbwyykyJYUTnOrBePwyTpXRZnfzhSIaESMjSYolE2SipBzJiI1ON1BOV33SYCqIC9c4ZhA/exec"; 
 
             const payload = {
                 rating: currentFeedbackRating,
                 categories: feedbackActiveCategories,
-                remarks: textInput ? textInput.value : ""
+                remarks: textInput ? textInput.value : "",
+                name: nameInput ? nameInput.value : "Anonymous",
+                email: emailInput ? emailInput.value : "",
+                phone: phoneInput ? phoneInput.value : ""
             };
 
             // Send feedback data directly to your deployed Google sheet
@@ -1217,6 +1239,9 @@
                 feedbackActiveCategories = [];
 
                 if (textInput) textInput.value = '';
+                if (nameInput) nameInput.value = '';
+                if (emailInput) emailInput.value = '';
+                if (phoneInput) phoneInput.value = '';
 
                 if (submitBtn) {
                     submitBtn.disabled = false;
