@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack-a-Mole Mania!</title>
+    <!-- Tailwind CSS for layout & utility styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #2e1065 0%, #3b0764 50%, #1e1b4b 100%);
+            min-height: 100vh;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .game-title {
+            font-family: 'Fredoka One', cursive;
+            text-shadow: 0 4px 0 #4c1d95, 0 8px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Hole 3D Styling */
+        .hole-container {
+            perspective: 1000px;
+        }
+
+        .hole {
+            position: relative;
+            background: radial-gradient(circle at 50% 30%, #451a03 0%, #170701 80%, #000 100%);
+            border-radius: 50%;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.8), 0 8px 0 #270e03, 0 12px 20px rgba(0,0,0,0.4);
+            border: 4px solid #78350f;
+            overflow: hidden;
+        }
+
+        /* Mole Base styling */
+        .mole {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            transform: translateY(100%);
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .mole.up {
+            transform: translateY(0%);
+        }
+
+        .mole.whacked {
+            transform: translateY(100%) scale(0.9);
+            transition: transform 0.1s ease-in;
+        }
+
+        /* Custom Hammer Cursor */
+        .game-area {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24' fill='%23fbbf24' stroke='%2378350f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m15 5 4 4' /><path d='M13 7 4 16' /><path d='M18 2 22 6' /><path d='M8 11 11 8' /><path d='M3 21l3-3' /></svg>") 16 16, auto;
+        }
+
+        .game-area:active {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24' fill='%23f59e0b' stroke='%23451a03' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' transform='rotate(-30)'><path d='m15 5 4 4' /><path d='M13 7 4 16' /><path d='M18 2 22 6' /><path d='M8 11 11 8' /><path d='M3 21l3-3' /></svg>") 32 32, auto;
+        }
+
+        /* Floating score popup animation */
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            50% { opacity: 1; transform: translateY(-30px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+        }
+
+        .score-popup {
+            position: absolute;
+            animation: floatUp 0.8s forwards ease-out;
+            pointer-events: none;
+            font-family: 'Fredoka One', cursive;
+            z-index: 30;
+        }
+
+        /* Screen shake effect */
+        .shake {
+            animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: #9333ea; border-radius: 4px; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between p-2 sm:p-4 text-white min-h-screen">
+
+    <!-- TOP HEADER / STATS BOARD -->
+    <header class="w-full max-w-4xl flex flex-col items-center gap-3 my-2">
+        <h1 class="game-title text-4xl sm:text-6xl text-yellow-400 tracking-wider text-center drop-shadow-lg">
+            WHACK-A-MOLE
+        </h1>
+
+        <!-- Scoreboard Card -->
+        <div class="w-full bg-slate-900/80 backdrop-blur-md border-2 border-purple-500/50 rounded-2xl p-3 sm:p-4 shadow-2xl flex flex-wrap justify-around items-center gap-2">
+            <!-- Score -->
+            <div class="flex items-center gap-3 bg-purple-950/60 px-4 py-2 rounded-xl border border-purple-700/50 min-w-[120px]">
+                <i class="fa-solid fa-trophy text-2xl text-yellow-400"></i>
+                <div>
+                    <div class="text-xs text-purple-300 font-bold uppercase tracking-wider">Score</div>
+                    <div id="score" class="text-2xl sm:text-3xl font-black text-white leading-none">0</div>
+                </div>
+            </div>
+
+            <!-- Time Left -->
+            <div class="flex items-center gap-3 bg-purple-950/60 px-4 py-2 rounded-xl border border-purple-700/50 min-w-[120px]">
+                <i class="fa-solid fa-clock text-2xl text-cyan-400"></i>
+                <div>
+                    <div class="text-xs text-purple-300 font-bold uppercase tracking-wider">Time</div>
+                    <div id="timer" class="text-2xl sm:text-3xl font-black text-cyan-300 leading-none">30s</div>
+                </div>
+            </div>
+
+            <!-- Combo -->
+            <div class="flex items-center gap-3 bg-purple-950/60 px-4 py-2 rounded-xl border border-purple-700/50 min-w-[120px]">
+                <i class="fa-solid fa-bolt text-2xl text-amber-400"></i>
+                <div>
+                    <div class="text-xs text-purple-300 font-bold uppercase tracking-wider">Combo</div>
+                    <div id="combo" class="text-2xl sm:text-3xl font-black text-amber-400 leading-none">x1</div>
+                </div>
+            </div>
+
+            <!-- High Score -->
+            <div class="flex items-center gap-3 bg-purple-950/60 px-4 py-2 rounded-xl border border-purple-700/50 min-w-[120px]">
+                <i class="fa-solid fa-crown text-2xl text-amber-300"></i>
+                <div>
+                    <div class="text-xs text-purple-300 font-bold uppercase tracking-wider">Best</div>
+                    <div id="high-score" class="text-2xl sm:text-3xl font-black text-amber-200 leading-none">0</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN GAME AREA -->
+    <main id="game-container" class="game-area relative w-full max-w-3xl my-auto p-4 sm:p-6 bg-emerald-900/40 border-4 border-emerald-600/40 rounded-3xl backdrop-blur-sm shadow-2xl">
+        
+        <!-- Mole Grid (9 Holes) -->
+        <div class="grid grid-cols-3 gap-3 sm:gap-6 aspect-square sm:aspect-[4/3] w-full max-w-2xl mx-auto">
+            <!-- Hole 1 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="0"></div>
+                </div>
+            </div>
+            <!-- Hole 2 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="1"></div>
+                </div>
+            </div>
+            <!-- Hole 3 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="2"></div>
+                </div>
+            </div>
+            <!-- Hole 4 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="3"></div>
+                </div>
+            </div>
+            <!-- Hole 5 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="4"></div>
+                </div>
+            </div>
+            <!-- Hole 6 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="5"></div>
+                </div>
+            </div>
+            <!-- Hole 7 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="6"></div>
+                </div>
+            </div>
+            <!-- Hole 8 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="7"></div>
+                </div>
+            </div>
+            <!-- Hole 9 -->
+            <div class="hole-container aspect-square">
+                <div class="hole w-full h-full">
+                    <div class="mole" data-index="8"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start / Game Over Overlay -->
+        <div id="overlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center p-6 text-center z-40 transition-opacity duration-300">
+            <div id="overlay-content" class="max-w-md w-full space-y-5">
+                <h2 id="overlay-title" class="game-title text-4xl sm:text-5xl text-yellow-400">Ready to Whack?</h2>
+                <p id="overlay-desc" class="text-gray-300 text-sm sm:text-base font-semibold">
+                    Test your reflexes! Hit regular moles, double points on Golden Moles, but <span class="text-red-400 font-bold">AVOID the Piranha Plant!</span>
+                </p>
+
+                <!-- Difficulty Selector -->
+                <div class="space-y-2">
+                    <label class="text-xs uppercase font-extrabold text-purple-300 tracking-wider">Select Difficulty</label>
+                    <div class="grid grid-cols-3 gap-2">
+                <!-- Start / Game Over Overlay -->
+        <div id="overlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center p-6 text-center z-40 transition-opacity duration-300">
+            <div id="overlay-content" class="max-w-md w-full space-y-5">
+                <h2 id="overlay-title" class="game-title text-4xl sm:text-5xl text-yellow-400">Ready to Whack?</h2>
+                <p id="overlay-desc" class="text-gray-300 text-sm sm:text-base font-semibold">
+                    Test your reflexes! Whack as many target faces as you can within the 30-second time limit!
+                </p>
+
+                <!-- Start Button -->
+                <button id="start-btn" onclick="startGame()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-xl rounded-2xl shadow-xl transform active:scale-95 transition-all border-b-4 border-amber-700">
+                    PLAY NOW <i class="fa-solid fa-play ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER & CONTROLS -->
+    <footer class="w-full max-w-4xl flex justify-between items-center my-2 px-2 text-xs text-purple-300 font-semibold">
+        <div>
+            <button id="sound-btn" onclick="toggleSound()" class="bg-purple-950/60 border border-purple-700/50 hover:bg-purple-900 px-3 py-1.5 rounded-lg transition flex items-center gap-2">
+                <i id="sound-icon" class="fa-solid fa-volume-high text-amber-400"></i> <span id="sound-text">Sound ON</span>
+            </button>
+        </div>
+        <div class="flex gap-4">
+            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span> Target (+10 pts)</span>
+        </div>
+    </footer>
+
+    <!-- GAME LOGIC SCRIPT -->
+    <script>
+        // --- Web Audio Synthesizer Engine ---
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            playWhack() {
+                if (!this.enabled) return;
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.1);
+            }
+
+            playGold() {
+                if (!this.enabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.4);
+            }
+
+            playBad() {
+                if (!this.enabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(60, now + 0.25);
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.25);
+            }
+
+            playGameOver() {
+                if (!this.enabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.linearRampToValueAtTime(150, now + 0.5);
+                gain.gain.setValueAtTime(0.5, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.5);
+            }
+        }
+
+        const audio = new SoundEngine();
+
+        // Target Image URLs provided
+        const TARGET_IMAGES = [
+            'https://clma2010.github.io/Clarence-Lee/clmoh.png',
+            'https://clma2010.github.io/Clarence-Lee/clamoh.png',
+            'https://clma2010.github.io/Clarence-Lee/janling.png'
+        ];
+
+        function getMoleSVG() {
+            const randomImg = TARGET_IMAGES[Math.floor(Math.random() * TARGET_IMAGES.length)];
+            return `<img src="${randomImg}" alt="Target" class="w-full h-full object-contain drop-shadow-xl pointer-events-none rounded-full" onerror="this.src='https://placehold.co/100x120/78350f/ffffff?text=Face'">`;
+        }
+
+        // --- Game State Variables ---
+        const moles = document.querySelectorAll('.mole');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const comboDisplay = document.getElementById('combo');
+        const highScoreDisplay = document.getElementById('high-score');
+        const overlay = document.getElementById('overlay');
+        const overlayTitle = document.getElementById('overlay-title');
+        const overlayDesc = document.getElementById('overlay-desc');
+        const gameContainer = document.getElementById('game-container');
+
+        let lastHole = -1;
+        let timeUp = false;
+        let score = 0;
+        let combo = 1;
+        let timeLeft = 30;
+        let timerInterval = null;
+        let moleTimeout = null;
+        let highScore = localStorage.getItem('whack_mole_highscore') || 0;
+
+        // Initialize UI
+        highScoreDisplay.textContent = highScore;
+        
+        // Render images into DOM
+        moles.forEach(mole => {
+            mole.innerHTML = getMoleSVG();
+        });
+
+        // --- Game Logic Functions ---
+
+        function randomTime(min, max) {
+            return Math.round(Math.random() * (max - min) + min);
+        }
+
+        function randomHole() {
+            const idx = Math.floor(Math.random() * moles.length);
+            if (idx === lastHole) {
+                return randomHole();
+            }
+            lastHole = idx;
+            return idx;
+        }
+
+        function popMole() {
+            if (timeUp) return;
+
+            const time = randomTime(500, 900);
+            const holeIdx = randomHole();
+            const moleEl = moles[holeIdx];
+
+            // Set Target Appearance
+            moleEl.innerHTML = getMoleSVG();
+            moleEl.classList.remove('whacked');
+            moleEl.classList.add('up');
+
+            moleTimeout = setTimeout(() => {
+                moleEl.classList.remove('up');
+                if (!timeUp) popMole();
+            }, time);
+        }
+
+        function startGame() {
+            audio.init();
+            
+            // Reset state
+            score = 0;
+            combo = 1;
+            timeLeft = 30;
+            timeUp = false;
+
+            scoreDisplay.textContent = '0';
+            timerDisplay.textContent = `${timeLeft}s`;
+            comboDisplay.textContent = 'x1';
+
+            // Hide overlay
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+
+            // Start popup loop & timer
+            popMole();
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `${timeLeft}s`;
+
+                if (timeLeft <= 5) {
+                    timerDisplay.classList.add('text-red-400', 'animate-pulse');
+                } else {
+                    timerDisplay.classList.remove('text-red-400', 'animate-pulse');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            timeUp = true;
+            clearTimeout(moleTimeout);
+            moles.forEach(m => m.classList.remove('up'));
+
+            audio.playGameOver();
+
+            // Check high score
+            let isNewHigh = false;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('whack_mole_highscore', highScore);
+                highScoreDisplay.textContent = highScore;
+                isNewHigh = true;
+            }
+
+            // Show Game Over Overlay
+            setTimeout(() => {
+                overlayTitle.textContent = isNewHigh ? 'NEW HIGH SCORE!' : 'TIME\'S UP!';
+                overlayTitle.className = `game-title text-4xl sm:text-5xl ${isNewHigh ? 'text-amber-300 animate-bounce' : 'text-yellow-400'}`;
+                overlayDesc.innerHTML = `You scored <span class="text-yellow-300 font-bold text-xl">${score}</span> points!`;
+                document.getElementById('start-btn').innerHTML = 'PLAY AGAIN <i class="fa-solid fa-rotate-right ml-2"></i>';
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            }, 500);
+        }
+
+        function createFloatingText(text, colorClass, x, y) {
+            const popup = document.createElement('div');
+            popup.className = `score-popup ${colorClass} text-2xl font-black`;
+            popup.textContent = text;
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 800);
+        }
+
+        function handleMoleClick(e) {
+            const mole = e.currentTarget;
+            if (!mole.classList.contains('up') || mole.classList.contains('whacked')) return;
+
+            const rect = mole.getBoundingClientRect();
+            const clickX = e.clientX || (rect.left + rect.width / 2);
+            const clickY = e.clientY || (rect.top + rect.height / 2);
+
+            mole.classList.add('whacked');
+            mole.classList.remove('up');
+
+            const points = 10 * combo;
+            score += points;
+            combo = Math.min(combo + 1, 5); // Stack combo up to 5x
+            audio.playWhack();
+            createFloatingText(`+${points}`, 'text-emerald-300', clickX, clickY);
+
+            // Update UI
+            scoreDisplay.textContent = score;
+            comboDisplay.textContent = `x${combo}`;
+        }
+
+        // Add event listeners for tap & click
+        moles.forEach(mole => {
+            mole.addEventListener('mousedown', handleMoleClick);
+            mole.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevents double click on mobile
+                handleMoleClick(e);
+            });
+        });
+
+        // Toggle Sound Controls
+        function toggleSound() {
+            audio.enabled = !audio.enabled;
+            const soundIcon = document.getElementById('sound-icon');
+            const soundText = document.getElementById('sound-text');
+
+            if (audio.enabled) {
+                soundIcon.className = 'fa-solid fa-volume-high text-amber-400';
+                soundText.textContent = 'Sound ON';
+            } else {
+                soundIcon.className = 'fa-solid fa-volume-xmark text-gray-400';
+                soundText.textContent = 'Sound OFF';
+            }
+        }
+    </script>
+</body>
+</html>
