@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True Love Compatibility Calculator</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for victory effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #fce7f3 0%, #ffd1dc 50%, #f3e8ff 100%);
+            min-height: 100vh;
+        }
+        .font-pacifico {
+            font-family: 'Pacifico', cursive;
+        }
+        .pulse-heart {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fbcfe8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f43f5e;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 text-gray-800 flex flex-col items-center justify-center relative overflow-x-hidden">
+
+    <!-- Floating background decorative hearts -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30">
+        <i class="fa-solid fa-heart text-pink-400 text-4xl absolute top-10 left-10 floating" style="animation-delay: 0s;"></i>
+        <i class="fa-solid fa-heart text-rose-400 text-6xl absolute top-1/4 right-12 floating" style="animation-delay: 1s;"></i>
+        <i class="fa-solid fa-heart text-purple-400 text-3xl absolute bottom-20 left-1/5 floating" style="animation-delay: 0.5s;"></i>
+        <i class="fa-solid fa-heart text-pink-500 text-5xl absolute bottom-10 right-1/4 floating" style="animation-delay: 1.5s;"></i>
+    </div>
+
+    <!-- Main Card Container -->
+    <div class="w-full max-w-4xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-pink-200 p-4 sm:p-8 relative z-10 my-4">
+        
+        <!-- Header -->
+        <div class="text-center mb-6 sm:mb-8">
+            <div class="inline-block relative">
+                <h1 class="text-3xl sm:text-5xl font-pacifico text-rose-500 drop-shadow-md">
+                    <i class="fa-solid fa-heart-pulse mr-2 text-pink-500 pulse-heart"></i>
+                    True Love Calculator
+                </h1>
+                <p class="text-pink-600 font-medium text-sm sm:text-base mt-2">Discover your ultimate relationship compatibility score!</p>
+            </div>
+        </div>
+
+        <!-- Form View -->
+        <div id="inputForm" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                
+                <!-- Divider Heart in middle for desktop -->
+                <div class="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none z-10">
+                    <div class="bg-rose-500 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg text-xl border-4 border-white font-bold pulse-heart">
+                        &
+                    </div>
+                </div>
+
+                <!-- Partner 1 Card -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-5 shadow-sm space-y-4">
+                    <div class="flex items-center space-x-2 border-b border-blue-200 pb-2">
+                        <i class="fa-solid fa-mars text-blue-500 text-2xl"></i>
+                        <h2 class="text-xl font-bold text-blue-700">Partner 1 (e.g. Him)</h2>
+                    </div>
+
+                    <!-- Name -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Full Name *</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3 top-3 text-blue-400"></i>
+                            <input type="text" id="p1Name" placeholder="Enter name" class="w-full pl-9 pr-3 py-2 bg-white rounded-xl border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <!-- Birthday -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Birthday *</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-cake-candles absolute left-3 top-3 text-blue-400"></i>
+                            <input type="date" id="p1Dob" onchange="autoFillZodiac(1)" class="w-full pl-9 pr-3 py-2 bg-white rounded-xl border border-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <!-- Zodiac Sign (Auto-filled or manual) -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Zodiac (星座)</label>
+                            <select id="p1Zodiac" class="w-full p-2 bg-white rounded-xl border border-blue-200 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <option value="Aries">Aries (白羊)</option>
+                                <option value="Taurus">Taurus (金牛)</option>
+                                <option value="Gemini">Gemini (双子)</option>
+                                <option value="Cancer">Cancer (巨蟹)</option>
+                                <option value="Leo">Leo (狮子)</option>
+                                <option value="Virgo">Virgo (处女)</option>
+                                <option value="Libra">Libra (天秤)</option>
+                                <option value="Scorpio">Scorpio (天蝎)</option>
+                                <option value="Sagittarius">Sagittarius (射手)</option>
+                                <option value="Capricorn">Capricorn (摩羯)</option>
+                                <option value="Aquarius">Aquarius (水瓶)</option>
+                                <option value="Pisces">Pisces (双鱼)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Blood Type</label>
+                            <select id="p1Blood" class="w-full p-2 bg-white rounded-xl border border-blue-200 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <option value="A">Type A</option>
+                                <option value="B">Type B</option>
+                                <option value="AB">Type AB</option>
+                                <option value="O">Type O</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Hobbies -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Favorite Vibe / Hobby</label>
+                        <select id="p1Hobby" class="w-full p-2 bg-white rounded-xl border border-blue-200 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                            <option value="travel">✈️ Travel & Adventure</option>
+                            <option value="gaming">🎮 Gaming & Tech</option>
+                            <option value="foodie">🍕 Foodie & Cooking</option>
+                            <option value="fitness">🏋️ Sports & Fitness</option>
+                            <option value="art">🎨 Movies, Music & Art</option>
+                            <option value="homebody">🏠 Cozy Homebody</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Partner 2 Card -->
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 border-2 border-pink-200 rounded-2xl p-5 shadow-sm space-y-4">
+                    <div class="flex items-center space-x-2 border-b border-pink-200 pb-2">
+                        <i class="fa-solid fa-venus text-pink-500 text-2xl"></i>
+                        <h2 class="text-xl font-bold text-pink-700">Partner 2 (e.g. Her)</h2>
+                    </div>
+
+                    <!-- Name -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Full Name *</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3 top-3 text-pink-400"></i>
+                            <input type="text" id="p2Name" placeholder="Enter name" class="w-full pl-9 pr-3 py-2 bg-white rounded-xl border border-pink-200 focus:ring-2 focus:ring-pink-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <!-- Birthday -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Birthday *</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-cake-candles absolute left-3 top-3 text-pink-400"></i>
+                            <input type="date" id="p2Dob" onchange="autoFillZodiac(2)" class="w-full pl-9 pr-3 py-2 bg-white rounded-xl border border-pink-200 focus:ring-2 focus:ring-pink-400 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <!-- Zodiac Sign (Auto-filled or manual) -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Zodiac (星座)</label>
+                            <select id="p2Zodiac" class="w-full p-2 bg-white rounded-xl border border-pink-200 text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
+                                <option value="Aries">Aries (白羊)</option>
+                                <option value="Taurus">Taurus (金牛)</option>
+                                <option value="Gemini">Gemini (双子)</option>
+                                <option value="Cancer">Cancer (巨蟹)</option>
+                                <option value="Leo">Leo (狮子)</option>
+                                <option value="Virgo">Virgo (处女)</option>
+                                <option value="Libra">Libra (天秤)</option>
+                                <option value="Scorpio">Scorpio (天蝎)</option>
+                                <option value="Sagittarius">Sagittarius (射手)</option>
+                                <option value="Capricorn">Capricorn (摩羯)</option>
+                                <option value="Aquarius">Aquarius (水瓶)</option>
+                                <option value="Pisces">Pisces (双鱼)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Blood Type</label>
+                            <select id="p2Blood" class="w-full p-2 bg-white rounded-xl border border-pink-200 text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
+                                <option value="A">Type A</option>
+                                <option value="B">Type B</option>
+                                <option value="AB">Type AB</option>
+                                <option value="O">Type O</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Hobbies -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Favorite Vibe / Hobby</label>
+                        <select id="p2Hobby" class="w-full p-2 bg-white rounded-xl border border-pink-200 text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
+                            <option value="travel">✈️ Travel & Adventure</option>
+                            <option value="gaming">🎮 Gaming & Tech</option>
+                            <option value="foodie">🍕 Foodie & Cooking</option>
+                            <option value="fitness">🏋️ Sports & Fitness</option>
+                            <option value="art">🎨 Movies, Music & Art</option>
+                            <option value="homebody">🏠 Cozy Homebody</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Love Questions -->
+            <div class="bg-purple-50 rounded-2xl p-4 border border-purple-200 space-y-3">
+                <h3 class="font-bold text-purple-700 text-center text-sm uppercase tracking-wide">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Love Dynamics (Quick Quiz)
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div>
+                        <label class="block font-semibold text-gray-600 mb-1">How do you resolve arguments?</label>
+                        <select id="q1" class="w-full p-2 bg-white rounded-lg border border-purple-200">
+                            <option value="talk">Talk through immediately</option>
+                            <option value="space">Give each other space then talk</option>
+                            <option value="food">Buy delicious food/treats</option>
+                            <option value="stubborn">Wait for the other to apologize</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-600 mb-1">Ideal Date Night?</label>
+                        <select id="q2" class="w-full p-2 bg-white rounded-lg border border-purple-200">
+                            <option value="romantic">Fancy Candlelight Dinner</option>
+                            <option value="movie">Netfllix & Chill at Home</option>
+                            <option value="outdoor">Amusement Park or Road Trip</option>
+                            <option value="gaming">Co-op Gaming Session</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error message container -->
+            <div id="errorMessage" class="hidden text-center text-red-500 font-medium text-sm bg-red-50 p-2 rounded-xl border border-red-200">
+                Please enter both names and birthdays to perform the test!
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center pt-2">
+                <button onclick="calculateLove()" class="w-full sm:w-2/3 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-bold text-lg py-4 px-8 rounded-full shadow-lg transform active:scale-95 hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2 mx-auto">
+                    <i class="fa-solid fa-heart-circle-check text-2xl"></i>
+                    <span>Calculate True Love %</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scanning / Loading Animation Screen -->
+        <div id="loadingScreen" class="hidden py-12 text-center space-y-6">
+            <div class="relative w-32 h-32 mx-auto flex items-center justify-center">
+                <i class="fa-solid fa-heart text-6xl text-rose-500 pulse-heart absolute"></i>
+                <div class="w-full h-full border-4 border-pink-300 border-t-pink-600 rounded-full animate-spin"></div>
+            </div>
+            <div class="space-y-2">
+                <h3 id="loadingText" class="text-xl font-bold text-gray-700 animate-pulse">Analyzing Cosmic Alignment...</h3>
+                <p id="loadingSubtext" class="text-sm text-pink-500">Checking Numerology & Zodiac Energies...</p>
+            </div>
+            <div class="w-full max-w-md mx-auto bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-pink-400 to-rose-600 h-full w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="hidden space-y-6">
+            
+            <!-- Result Header with Names and Score -->
+            <div class="text-center bg-gradient-to-br from-pink-100 via-purple-50 to-rose-100 rounded-3xl p-6 border-2 border-pink-300 relative overflow-hidden shadow-inner">
+                
+                <p class="text-sm uppercase font-bold tracking-widest text-pink-600 mb-2">Match Report</p>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-800 flex items-center justify-center gap-2 flex-wrap">
+                    <span id="resP1Name" class="text-blue-600"></span>
+                    <i class="fa-solid fa-heart text-red-500 text-xl"></i>
+                    <span id="resP2Name" class="text-pink-600"></span>
+                </h2>
+
+                <!-- Big Percentage Display -->
+                <div class="my-6 relative inline-block">
+                    <div class="text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-purple-600 font-pacifico tracking-wider" id="scoreDisplay">
+                        0%
+                    </div>
+                    <div id="verdictBadge" class="mt-2 inline-block px-4 py-1 rounded-full text-sm font-bold bg-rose-500 text-white shadow-md">
+                        Match Title
+                    </div>
+                </div>
+
+                <p id="verdictDesc" class="text-gray-700 max-w-xl mx-auto italic text-sm sm:text-base">
+                    Verdict description goes here...
+                </p>
+            </div>
+
+            <!-- Breakdown Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                
+                <!-- 1. Name Match -->
+                <div class="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-pink-100 text-pink-600 rounded-xl text-xl">
+                        <i class="fa-solid fa-signature"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500 font-bold uppercase">Name Harmony</div>
+                        <div class="text-lg font-extrabold text-gray-800" id="nameScore">0%</div>
+                    </div>
+                </div>
+
+                <!-- 2. Zodiac Match -->
+                <div class="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-purple-100 text-purple-600 rounded-xl text-xl">
+                        <i class="fa-solid fa-star text-purple-500"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500 font-bold uppercase">Zodiac Signs</div>
+                        <div class="text-lg font-extrabold text-gray-800" id="zodiacScore">0%</div>
+                    </div>
+                </div>
+
+                <!-- 3. Birthday Numerology -->
+                <div class="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-blue-100 text-blue-600 rounded-xl text-xl">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500 font-bold uppercase">Numerology</div>
+                        <div class="text-lg font-extrabold text-gray-800" id="numScore">0%</div>
+                    </div>
+                </div>
+
+                <!-- 4. Blood Type -->
+                <div class="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-red-100 text-red-600 rounded-xl text-xl">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500 font-bold uppercase">Blood Synergy</div>
+                        <div class="text-lg font-extrabold text-gray-800" id="bloodScore">0%</div>
+                    </div>
+                </div>
+
+                <!-- 5. Hobby Match -->
+                <div class="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-green-100 text-green-600 rounded-xl text-xl">
+                        <i class="fa-solid fa-icons"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500 font-bold uppercase">Vibe Match</div>
+                        <div class="text-lg font-extrabold text-gray-800" id="hobbyScore">0%</div>
+                    </div>
+                </div>
+
+                <!-- 6. Chinese Zodiac -->
+                <div class="bg-white p-4 rounded-2xl border border-pink-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-amber-100 text-amber-600 rounded-xl text-xl">
+                        <i class="fa-solid fa-dragon"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500 font-bold uppercase">Chinese Zodiac</div>
+                        <div class="text-lg font-extrabold text-gray-800" id="cnZodiacScore">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Love Tips Box -->
+            <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200">
+                <h4 class="font-bold text-amber-800 text-sm uppercase flex items-center mb-1">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i> Relationship Secret Tip
+                </h4>
+                <p id="loveTip" class="text-sm text-amber-900 italic">
+                    Tip loading...
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-3 pt-2">
+                <button onclick="resetCalculator()" class="w-full sm:w-auto bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-full transition shadow flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Test Another Couple</span>
+                </button>
+                <button onclick="shareResult()" class="w-full sm:w-auto bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 px-6 rounded-full transition shadow-lg flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Copy Compatibility Link</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-pink-600/70 mt-4 font-medium">
+        Made with ❤️ for entertainment & fun purposes!
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Zodiac Sign Helper based on Month and Day ---
+        function getZodiacSign(day, month) {
+            const dates = [20, 19, 21, 20, 21, 21, 23, 23, 23, 23, 22, 22];
+            const signs = ["Capricorn", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius"];
+            return day < dates[month - 1] ? signs[month - 1] : signs[month % 12];
+        }
+
+        function autoFillZodiac(partnerNum) {
+            const dobInput = document.getElementById(`p${partnerNum}Dob`).value;
+            if (!dobInput) return;
+
+            const date = new Date(dobInput);
+            const day = date.getDate();
+            const month = date.getMonth() + 1; // 1-indexed
+
+            if (!isNaN(day) && !isNaN(month)) {
+                const sign = getZodiacSign(day, month);
+                document.getElementById(`p${partnerNum}Zodiac`).value = sign;
+            }
+        }
+
+        // --- Chinese Zodiac Helper ---
+        function getChineseZodiac(year) {
+            const animals = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
+            return animals[(year - 4) % 12];
+        }
+
+        // --- Calculation Logic ---
+        function calculateLove() {
+            const p1Name = document.getElementById('p1Name').value.trim();
+            const p2Name = document.getElementById('p2Name').value.trim();
+            const p1Dob = document.getElementById('p1Dob').value;
+            const p2Dob = document.getElementById('p2Dob').value;
+
+            const errorMsg = document.getElementById('errorMessage');
+
+            if (!p1Name || !p2Name || !p1Dob || !p2Dob) {
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            errorMsg.classList.add('hidden');
+
+            // Show Loading Screen
+            document.getElementById('inputForm').classList.add('hidden');
+            document.getElementById('loadingScreen').classList.remove('hidden');
+
+            // Animate progress steps
+            let progress = 0;
+            const progressBar = document.getElementById('progressBar');
+            const loadingText = document.getElementById('loadingText');
+            const loadingSubtext = document.getElementById('loadingSubtext');
+
+            const steps = [
+                { p: 25, title: "Calculating Name Phonetics...", sub: "Mapping soulmate frequencies" },
+                { p: 50, title: "Reading Zodiac Stars...", sub: "Aligning planetary orbits & elements" },
+                { p: 75, title: "Checking Numerology Birth Path...", sub: "Syncing life path numbers" },
+                { p: 100, title: "Finalizing Love Score...", sub: "Preparing detailed match report" }
+            ];
+
+            let stepIdx = 0;
+            const interval = setInterval(() => {
+                if (stepIdx < steps.length) {
+                    progressBar.style.width = steps[stepIdx].p + '%';
+                    loadingText.innerText = steps[stepIdx].title;
+                    loadingSubtext.innerText = steps[stepIdx].sub;
+                    stepIdx++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(showResults, 500);
+                }
+            }, 600);
+        }
+
+        function computeDetailedScores() {
+            const p1Name = document.getElementById('p1Name').value.trim().toLowerCase();
+            const p2Name = document.getElementById('p2Name').value.trim().toLowerCase();
+            
+            const p1Dob = new Date(document.getElementById('p1Dob').value);
+            const p2Dob = new Date(document.getElementById('p2Dob').value);
+
+            const p1Zodiac = document.getElementById('p1Zodiac').value;
+            const p2Zodiac = document.getElementById('p2Zodiac').value;
+
+            const p1Blood = document.getElementById('p1Blood').value;
+            const p2Blood = document.getElementById('p2Blood').value;
+
+            const p1Hobby = document.getElementById('p1Hobby').value;
+            const p2Hobby = document.getElementById('p2Hobby').value;
+
+            // 1. Name Match Score (ASCII Hash & common letters)
+            let nameSum = 0;
+            const combinedNames = p1Name + "loves" + p2Name;
+            for (let i = 0; i < combinedNames.length; i++) {
+                nameSum += combinedNames.charCodeAt(i);
+            }
+            const nameScore = 60 + (nameSum % 38); // 60% to 97%
+
+            // 2. Zodiac Score Matrix (Simplistic & Fun)
+            const elements = {
+                Aries: "Fire", Leo: "Fire", Sagittarius: "Fire",
+                Taurus: "Earth", Virgo: "Earth", Capricorn: "Earth",
+                Gemini: "Air", Libra: "Air", Aquarius: "Air",
+                Cancer: "Water", Scorpio: "Water", Pisces: "Water"
+            };
+
+            let zodiacScore = 70;
+            if (elements[p1Zodiac] === elements[p2Zodiac]) {
+                zodiacScore = 95; // Same element
+            } else if (
+                (elements[p1Zodiac] === "Fire" && elements[p2Zodiac] === "Air") ||
+                (elements[p1Zodiac] === "Air" && elements[p2Zodiac] === "Fire") ||
+                (elements[p1Zodiac] === "Earth" && elements[p2Zodiac] === "Water") ||
+                (elements[p1Zodiac] === "Water" && elements[p2Zodiac] === "Earth")
+            ) {
+                zodiacScore = 90; // Complementary element
+            } else {
+                zodiacScore = 75;
+            }
+
+            // 3. Numerology Life Path Match
+            const getLifePath = (d) => {
+                const digits = d.toISOString().replace(/\D/g, '');
+                let sum = digits.split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                while (sum > 9 && sum !== 11 && sum !== 22) {
+                    sum = sum.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                }
+                return sum;
+            };
+
+            const lp1 = getLifePath(p1Dob);
+            const lp2 = getLifePath(p2Dob);
+            const numDiff = Math.abs(lp1 - lp2);
+            const numScore = Math.max(65, 100 - (numDiff * 7));
+
+            // 4. Blood Type Synergy
+            let bloodScore = 80;
+            if (p1Blood === p2Blood) bloodScore = 88;
+            if ((p1Blood === 'O' && p2Blood === 'A') || (p1Blood === 'A' && p2Blood === 'O')) bloodScore = 94;
+            if ((p1Blood === 'AB' && p2Blood === 'B') || (p1Blood === 'B' && p2Blood === 'AB')) bloodScore = 91;
+
+            // 5. Hobby Score
+            const hobbyScore = (p1Hobby === p2Hobby) ? 98 : 82;
+
+            // 6. Chinese Zodiac Compatibility
+            const y1 = p1Dob.getFullYear();
+            const y2 = p2Dob.getFullYear();
+            const cnZ1 = getChineseZodiac(y1);
+            const cnZ2 = getChineseZodiac(y2);
+            const cnZodiacScore = ((Math.abs(y1 - y2) % 4) === 0) ? 96 : 84;
+
+            // Weighted Total
+            const finalScore = Math.round(
+                (nameScore * 0.20) +
+                (zodiacScore * 0.25) +
+                (numScore * 0.20) +
+                (bloodScore * 0.10) +
+                (hobbyScore * 0.15) +
+                (cnZodiacScore * 0.10)
+            );
+
+            return {
+                finalScore,
+                nameScore,
+                zodiacScore,
+                numScore,
+                bloodScore,
+                hobbyScore,
+                cnZodiacScore
+            };
+        }
+
+        function showResults() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+
+            const p1Name = document.getElementById('p1Name').value.trim();
+            const p2Name = document.getElementById('p2Name').value.trim();
+
+            document.getElementById('resP1Name').innerText = p1Name;
+            document.getElementById('resP2Name').innerText = p2Name;
+
+            const scores = computeDetailedScores();
+
+            // Set Breakdown Text
+            document.getElementById('nameScore').innerText = scores.nameScore + "%";
+            document.getElementById('zodiacScore').innerText = scores.zodiacScore + "%";
+            document.getElementById('numScore').innerText = scores.numScore + "%";
+            document.getElementById('bloodScore').innerText = scores.bloodScore + "%";
+            document.getElementById('hobbyScore').innerText = scores.hobbyScore + "%";
+            document.getElementById('cnZodiacScore').innerText = scores.cnZodiacScore + "%";
+
+            // Animate Main Score Count-Up
+            animateValue("scoreDisplay", 0, scores.finalScore, 1500);
+
+            // Verdict and Badges
+            const badge = document.getElementById('verdictBadge');
+            const desc = document.getElementById('verdictDesc');
+            const tip = document.getElementById('loveTip');
+
+            if (scores.finalScore >= 90) {
+                badge.innerText = "👩‍❤️‍👨 Soulmates Made in Heaven!";
+                badge.className = "mt-2 inline-block px-4 py-1 rounded-full text-sm font-bold bg-rose-500 text-white shadow-md";
+                desc.innerText = `Unbelievable connection! ${p1Name} and ${p2Name} share rare cosmic harmony across stars, numbers, and vibe. You complement each other effortlessly!`;
+                tip.innerText = "Keep communicating openly and celebrating each other's little victories. You are truly dynamic together!";
+                triggerConfetti();
+            } else if (scores.finalScore >= 75) {
+                badge.innerText = "💖 Deep Love & High Potential!";
+                badge.className = "mt-2 inline-block px-4 py-1 rounded-full text-sm font-bold bg-pink-500 text-white shadow-md";
+                desc.innerText = `${p1Name} and ${p2Name} have a very strong spark and great core compatibility! With mutual support, your relationship will flourish beautifully.`;
+                tip.innerText = "Plan surprise date nights frequently to keep the flame burning bright!";
+            } else if (scores.finalScore >= 60) {
+                badge.innerText = "🌟 Sweet Match with Fun Chemistry!";
+                badge.className = "mt-2 inline-block px-4 py-1 rounded-full text-sm font-bold bg-purple-500 text-white shadow-md";
+                desc.innerText = `Good potential! While you both bring unique and different perspectives into the relationship, your opposites attract energy creates excitement!`;
+                tip.innerText = "Patience and understanding differences will turn small hurdles into memorable bonding moments.";
+            } else {
+                badge.innerText = "🔥 Passionate & Challenging Adventure!";
+                badge.className = "mt-2 inline-block px-4 py-1 rounded-full text-sm font-bold bg-indigo-500 text-white shadow-md";
+                desc.innerText = `${p1Name} and ${p2Name} have a unique bond that requires extra effort and open communication to balance out your different energies.`;
+                tip.innerText = "Focus on active listening and discovering shared hobbies together!";
+            }
+        }
+
+        // Count up animation for total percentage
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                obj.innerText = current + "%";
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Confetti effect
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Reset
+        function resetCalculator() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('inputForm').classList.remove('hidden');
+        }
+
+        // Share Link feature
+        function shareResult() {
+            const dummyText = `True Love Match: ${document.getElementById('p1Name').value} & ${document.getElementById('p2Name').value} = ${document.getElementById('scoreDisplay').innerText}! Calculate yours!`;
+            
+            // Clipboard fallback
+            const tempInput = document.createElement("input");
+            document.body.appendChild(tempInput);
+            tempInput.value = dummyText;
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            alert("Compatibility summary copied to clipboard! Share it with your friends or partner 💖");
+        }
+    </script>
+</body>
+</html>
